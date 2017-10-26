@@ -1,7 +1,7 @@
 package helpme_productions.com.picassopoc;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +11,8 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -20,13 +22,23 @@ public class MainActivity extends AppCompatActivity {
     DefaultItemAnimator animator;
     List<String> listOfImagesURL = new ArrayList<>();
     ImageView starting;
+    Picasso.Builder builder;
+    ExecutorService pool;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         images = (RecyclerView) findViewById(R.id.rvRecyclerView);
         starting = (ImageView) findViewById(R.id.ivSetPicture);
-        Picasso.with(this).load("http://orig14.deviantart.net/f485/f/2016/147/3/d/rwby_crescent_rose_and_qrow_s_scythe_by_archeoalex-da3yeu6.png").into(starting);
+        pool = Executors.newFixedThreadPool(5);
+        builder = new Picasso.Builder(this);
+        builder.executor(pool);
+        Picasso picasso = builder.build();
+
+
+        picasso
+                .load("http://orig14.deviantart.net/f485/f/2016/147/3/d/rwby_crescent_rose_and_qrow_s_scythe_by_archeoalex-da3yeu6.png")
+                .into(starting);
         setupImageURLList();
         setupRecyclerView();
     }
